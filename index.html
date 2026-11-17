@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог кольорів RGB для дизайнера</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --accent: #38bdf8;
+            --border: #334155;
+            --success: #22c55e;
+            --error: #ef4444;
+        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 2rem 1rem;
+            line-height: 1.6;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 2.5rem; }
+        h1 { color: var(--accent); margin-bottom: 0.5rem; }
+        .subtitle { color: var(--muted); font-size: 1.05rem; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .color-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .color-card:hover { transform: translateY(-4px); }
+        .swatch { height: 110px; width: 100%; border-bottom: 1px solid var(--border); }
+        .card-body { padding: 1.25rem; }
+        .color-title { font-size: 1.2rem; font-weight: 700; margin: 0 0 0.5rem; }
+        .tuple-badge {
+            display: inline-block;
+            background: #0f172a;
+            color: var(--accent);
+            font-family: monospace;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+        .components { font-size: 0.9rem; color: var(--muted); margin: 0; padding-left: 1.1rem; }
+        
+        .section-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        h2 { margin-top: 0; font-size: 1.35rem; color: var(--accent); }
+        
+        .test-item {
+            background: #0f172a;
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+        .test-item.error { border-left-color: var(--error); }
+        .test-item.success { border-left-color: var(--success); }
+        code { font-family: monospace; color: #e2e8f0; }
+        
+        .btn {
+            background: var(--accent);
+            color: #0f172a;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .btn:hover { opacity: 0.9; }
+        #live-output {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: #020617;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #a5f3fc;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🎨 Каталог кольорів RGB</h1>
+        <p class="subtitle">Збереження незмінних трійок <code>(R, G, B)</code> для дизайн-системи та розбір їхніх компонентів</p>
+    </header>
+
+    <!-- Картки кольорів -->
+    <section class="grid" id="palette-grid"></section>
+
+    <!-- Пояснення компонентів -->
+    <section class="section-box">
+        <h2>🔍 Як влаштована трійка RGB</h2>
+        <p>Кожен колір зафіксовано у вигляді <strong>незмінного кортежу</strong> з трьох цілих чисел у діапазоні від <code>0</code> до <code>255</code>:</p>
+        <ul>
+            <li><strong>R (Red — Червоний):</strong> інтенсивність червоного каналу (індекс <code>[0]</code>).</li>
+            <li><strong>G (Green — Зелений):</strong> інтенсивність зеленого каналу (індекс <code>[1]</code>).</li>
+            <li><strong>B (Blue — Синій):</strong> інтенсивність синього каналу (індекс <code>[2]</code>).</li>
+        </ul>
+    </section>
+
+    <!-- Приклади перевірки -->
+    <section class="section-box">
+        <h2>🧪 Приклади перевірки роботи каталогу</h2>
+        
+        <div class="test-item success">
+            <strong>Перевірка 1 (Успішне зчитування та розпакування):</strong><br>
+            Отримуємо колір <code>"Кораловий"</code> &rarr; <code>(255, 111, 97)</code>.<br>
+            Розпакування компонентів: <code>R = 255</code>, <code>G = 111</code>, <code>B = 97</code>. Колір коректно відображається на картці.
+        </div>
+
+        <div class="test-item error">
+            <strong>Перевірка 2 (Спроба змінити елемент незмінної трійки):</strong><br>
+            Виконуємо спробу перезапису: <code>coral[0] = 100</code>.<br>
+            Результат: <strong>Помилка незмінності (TypeError)</strong>. Запис захищено від випадкового редагування дизайнером чи кодом.
+        </div>
+
+        <button class="btn" onclick="runLiveTests()">▶ Запустити інтерактивну перевірку в браузері</button>
+        <div id="live-output">Натисніть кнопку вище, щоб виконати обидва тести на незмінних об'єктах...</div>
+    </section>
+
+    <!-- Обмеження -->
+    <section class="section-box">
+        <h2>⚠️ Обмеження системи</h2>
+        <ul>
+            <li><strong>Неможливість редагування на місці:</strong> щоб змінити відтінок, потрібно створити новий кортеж, а не змінювати старий.</li>
+            <li><strong>Відсутність прозорості (Alpha-каналу):</strong> формат <code>(R, G, B)</code> підтримує лише 3 компоненти без прозорості (для прозорості потрібен <code>RGBA</code> з 4 елементів).</li>
+            <li><strong>Суворий діапазон значень:</strong> кожен компонент має бути цілим числом від <code>0</code> до <code>255</code>.</li>
+        </ul>
+    </section>
+</div>
+
+<script>
+    // Незмінні трійки RGB (аналог tuple у Python через Object.freeze)
+    const rgbCatalog = Object.freeze({
+        "Кораловий": Object.freeze([255, 111, 97]),
+        "Морська хвиля": Object.freeze([0, 168, 150]),
+        "Сонячний жовтий": Object.freeze([255, 209, 102]),
+        "Глибокий індиго": Object.freeze([67, 56, 202])
+    });
+
+    const grid = document.getElementById("palette-grid");
+
+    for (const [name, rgb] of Object.entries(rgbCatalog)) {
+        const [r, g, b] = rgb; // Розпакування трійки
+        const card = document.createElement("div");
+        card.className = "color-card";
+        card.innerHTML = `
+            <div class="swatch" style="background-color: rgb(${r}, ${g}, ${b});"></div>
+            <div class="card-body">
+                <h3 class="color-title">${name}</h3>
+                <div class="tuple-badge">(${r}, ${g}, ${b})</div>
+                <ul class="components">
+                    <li><strong>R (Червоний):</strong> ${r}</li>
+                    <li><strong>G (Зелений):</strong> ${g}</li>
+                    <li><strong>B (Синій):</strong> ${b}</li>
+                </ul>
+            </div>
+        `;
+        grid.appendChild(card);
+    }
+
+    function runLiveTests() {
+        "use strict";
+        const output = document.getElementById("live-output");
+        const coral = rgbCatalog["Кораловий"];
+        let log = `✅ Тест 1: Розпаковано "Кораловий" -> R=${coral[0]}, G=${coral[1]}, B=${coral[2]}\n`;
+
+        try {
+            coral[0] = 100; // Спроба змінити заморожений кортеж
+        } catch (err) {
+            log += `🛡️ Тест 2: Захист спрацював! Перехоплено помилку: ${err.name} (не можна змінювати елементи трійки).`;
+        }
+        output.innerText = log;
+    }
+</script>
+</body>
+</html>
